@@ -53,4 +53,38 @@ public class ProductController {
 
         return Arrays.asList(product);
     }
+
+    @RequestMapping("/hystrix")
+    public List<Product> hystrix(){
+        Product product = new Product(3,"电脑 port:" + port,40);
+
+        return Arrays.asList(product);
+    }
+
+    @RequestMapping("/hystrixTimeout")
+    public List<Product> hystrixTimeout(){
+
+        try {
+            TimeUnit.SECONDS.sleep(2);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Product product = new Product(8,"本书 port:" + port,50);
+
+        return Arrays.asList(product);
+    }
+
+    @RequestMapping("/dashboard")
+    public List<Product> dashboard(){
+
+        try {
+            TimeUnit.SECONDS.sleep(5);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        Product product = new Product(9,"仪表盘 port:" + port,50);
+
+        return Arrays.asList(product);
+    }
+
 }

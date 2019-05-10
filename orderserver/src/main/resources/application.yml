@@ -13,8 +13,13 @@ server:
 spring:
   application:
     name: order-server
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+    timeout: 3000
 
-
+#修改访问地址为随机，如从注册中心拉取出3个服务地址，这3个服务地址是随机访问的
 product-server:
   ribbon:
 #    NIWSServerListClassName: com.netflix.loadbalancer.ConfigurationBasedServerList
@@ -25,5 +30,36 @@ feign:
   client:
     config:
       default:
-        connectTimeout: 5000
-        readTimeout: 5000
+        connectTimeout: 3000
+        readTimeout: 3000
+  #feign注解使用Hystrix的fallback必需开启，默认关闭
+  hystrix:
+    enabled: true
+
+
+#所有的参数在com.netflix.hystrix.HystrixCommandProperties
+#hystrix:
+#  command:
+#    default:
+#      execution:
+#        timeout:
+#          enabled: false
+
+#使用@FeignClient时，hystrix的超时时间优先级大于ribbon的超时间，如果ribbon超时设为3秒，hystrix不设置（默认为1秒），那么超时间为1秒。
+#所以在使用hystrix时，要注意设置超时时间，以免ribbon设置的超时时间无效
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 3000
+
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
