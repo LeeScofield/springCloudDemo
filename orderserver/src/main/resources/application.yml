@@ -1,0 +1,21 @@
+eureka:
+  instance:
+    instance-id: ${spring.cloud.client.ip-address}:${server.port}  #注册实例
+    hostname: ${spring.cloud.client.ip-address}   #实际IP,通过请求调用时真实地址
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+
+
+server:
+  port: 8081
+
+spring:
+  application:
+    name: order-server
+
+
+product-server:
+  ribbon:
+#    NIWSServerListClassName: com.netflix.loadbalancer.ConfigurationBasedServerList
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule
