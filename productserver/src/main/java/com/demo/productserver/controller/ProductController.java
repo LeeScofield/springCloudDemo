@@ -3,11 +3,14 @@ package com.demo.productserver.controller;
 import com.demo.model.Product;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.annotation.Order;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by Lee on 2019-05-08.
@@ -29,13 +32,25 @@ public class ProductController {
     }
 
     @RequestMapping("/productBy")
-    public List<Product> list(String id){
-        System.out.println(id);
+    public List<Product> productBy(@RequestParam("id") Integer id){
 
-        Product product = new Product(Integer.valueOf(id),"餐具 port:" + port,10);
+        System.out.println("id:" + id);
+        Product product = new Product(id,"餐具 port:" + port,20);
 
         return Arrays.asList(product);
     }
 
+    @RequestMapping("/productTimeout")
+    public List<Product> productTimeout(){
 
+        try {
+            TimeUnit.SECONDS.sleep(2);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        Product product = new Product(5,"手机 port:" + port,30);
+
+        return Arrays.asList(product);
+    }
 }

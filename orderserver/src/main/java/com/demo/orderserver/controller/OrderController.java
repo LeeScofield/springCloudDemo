@@ -1,10 +1,13 @@
 package com.demo.orderserver.controller;
 
 import com.demo.model.Order;
+import com.demo.model.Product;
+import com.demo.orderserver.fegin.ProductFeign;
 import com.sun.org.apache.bcel.internal.generic.NEW;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -30,6 +33,9 @@ public class OrderController {
     @Autowired
     private RestTemplate restTemplate;
 
+    @Autowired
+    private ProductFeign productFeign;
+
 
     @RequestMapping("/list")
     public List<Order> list() {
@@ -43,7 +49,7 @@ public class OrderController {
      * @return
      */
     @RequestMapping("/getProduct")
-    public String invokedProductService() {
+    public String getProduct() {
 
 //      第一种方式
         ServiceInstance instance = loadBalancer.choose("product-server");
@@ -55,7 +61,7 @@ public class OrderController {
 //
 //        list.forEach(System.out::println);
 
-        return list.get(0).toString() + "---" ;
+        return list.get(0).toString() + "   ---" ;
     }
 
 
@@ -64,12 +70,23 @@ public class OrderController {
      * @return
      */
     @RequestMapping("/getProductByFeign")
-    public String getProductByFeign(){
+    public String getProductByFeign(Integer id){
 
+        List<Product> products = productFeign.productBy(id);
+        return products.get(0).toString() + "   ****";
 
-        return null;
     }
 
+    /**
+     * 测试feign调用超时
+     * @return
+     */
+    @RequestMapping("/getProductTimeout")
+    public String getProductTimeout() {
+
+        List<Product> products = productFeign.productTimeout();
+        return products.get(0).toString() + "   ****";
+    }
 
 
     @RequestMapping("/test")
